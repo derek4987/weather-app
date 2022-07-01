@@ -1,7 +1,7 @@
 // single page weather app js 
 
 let didExecute =true;
-let weatherConstructor;
+let weatherConstructor = {};
 
 // functions to import
 
@@ -15,18 +15,25 @@ const initialPage = () => {
 const searchCity = () => {
     const seachButton = document.querySelector('#searchButton');
     seachButton.addEventListener('click', function(e) {
-        openWeather();
-        if (didExecute === true){
-            updateBg();
-        } else return;
+        weatherConstructor = {};
+        openWeather()
+            .then(function() {
+                if (didExecute === true){
+                    updateBg();
+                    displayData();
+                } else return;
+            });
     });
 
     document.addEventListener('keydown', (e) => {
         if (e.key ==='Enter' && document.querySelector('.weatherSearch') === document.activeElement) {
-            openWeather();
-            if (didExecute === true) {
-                updateBg();
-            } else return;
+            openWeather()
+                .then(function() {
+                    if (didExecute === true){
+                        updateBg();
+                        displayData();
+                    } else return;
+                });
         }
     });    
 }
@@ -87,7 +94,9 @@ async function openWeather() {
 
         const weatherData = new WeatherData(city,temp,tempHigh,tempLow,humidity,feelsLike,description,windSpeed);
         weatherConstructor = weatherData;
-        console.log(weatherData);
+        console.log(weatherConstructor);
+        console.log(weatherConstructor.city);
+        return weatherConstructor;
     } catch(err) {
         didExecute = false;
         err = 'City not found';
@@ -107,4 +116,30 @@ function WeatherData(city, temp, tempHigh, tempLow, humidity, feelsLike, descrip
     this.feelsLike = feelsLike;
     this.description = description;
     this.windSpeed = windSpeed;
+}
+
+// display data on DOM
+function displayData() {
+    const city = document.querySelector('#city');
+    const description = document.querySelector('#description');
+    const temp = document.querySelector('#temp');
+    const tempHigh = document.querySelector('#tempHigh');
+    const tempLow = document.querySelector('#tempLow');
+    const humidity = document.querySelector('#humidity');
+    const feelsLike = document.querySelector('#feelsLike');
+    const windSpeed = document.querySelector('#windSpeed');
+
+    city.textContent = `${weatherConstructor.city}`;
+    description.textContent = `${weatherConstructor.description}`;
+    temp.textContent = `${Math.round(weatherConstructor.temp)}\u00B0`;
+    tempHigh.textContent = `H:${Math.round(weatherConstructor.tempHigh)}\u00B0`;
+    tempLow.textContent = `L:${Math.round(weatherConstructor.tempLow)}\u00B0`;
+    humidity.textContent = `${weatherConstructor.humidity}%`;
+    feelsLike.textContent = `${Math.round(weatherConstructor.feelsLike)}\u00B0`;
+    windSpeed.textContent = `${Math.round(weatherConstructor.windSpeed * 100)/100} km/hr`;
+}
+
+// loading animation
+function loading() {
+    console.log('future loading animation');
 }
