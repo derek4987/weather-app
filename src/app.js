@@ -9,6 +9,13 @@ let weatherConstructor = {};
 const initialPage = () => {
     let defaultValue = 'Kansas+City';
     unsplashBg(defaultValue);
+    openWeather()
+        .then(function() {
+            if (didExecute === true) {
+                displayData();
+            } else return
+        });
+    document.querySelector('.weatherSearch').value = '';
 }
 
 // update background
@@ -74,7 +81,10 @@ function updateBg() {
 // weather data
 // fetch data with open weather api
 async function openWeather() {
-    const cityInput = document.querySelector('.weatherSearch').value;
+    let cityInput = document.querySelector('.weatherSearch').value;
+    if (cityInput === '') {
+        cityInput = 'Kansas City';
+    }
     const api_key = '3e5943bf2df310039c464f9b62bbd804';
 
     try {

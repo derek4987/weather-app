@@ -58,7 +58,7 @@ button {
 #weatherData {
     width: 400px;
     height: 350px;
-    background-color: rgb(237, 238, 228);
+    background-color: rgb(203, 203, 203);
     border-radius: 40px;
     display: flex;
     flex-direction: column;
